@@ -13,17 +13,20 @@ public class UserService {
         userMap.put("Tom", new User(1, "Tom", "12345", "tom@qq.com"));
     }
 
-    public void createUser(User user) throws RuntimeException {
+    public void createUser(User user) {
         String username = user.getUsername();
-        if(userMap.containsValue(username)) {
-            throw new RuntimeException("");
+        if(userMap.containsKey(username)) {
+            throw new UserExistsException("User already exists.");
         }
         user.setId(userMap.size() + 1);
         userMap.put(username, user);
     }
 
     public boolean auth(String username, String password) {
-        if(userMap.get(username).getPassword().equals(password)) {
+        User record = userMap.get(username);
+        if(record == null) return false;
+
+        if(record.getPassword().equals(password)) {
             return true;
         }
         return false;

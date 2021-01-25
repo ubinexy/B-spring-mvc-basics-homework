@@ -26,18 +26,7 @@ public class LoginController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public void register(@RequestBody @Valid User user) {
-        try {
-            userService.createUser(user);
-        } catch (RuntimeException e) {
-            throw new UserExistsException("User exists.");
-        }
-    }
-
-    @ExceptionHandler(UserExistsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public Error ExceptionHandler(UserExistsException e) {
-        return new Error(400, e.getMessage());
+        userService.createUser(user);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -74,5 +63,12 @@ public class LoginController {
             break;
         }
         return new Error(400, message);
+    }
+
+    @ExceptionHandler(AuthenticateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Error ExceptionHandler(AuthenticateException e) {
+        return new Error(400, e.getMessage());
     }
 }
